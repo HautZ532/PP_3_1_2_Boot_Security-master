@@ -8,6 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -19,27 +20,41 @@ public class User implements UserDetails {
 
     @Column(name = "name")
     @NotEmpty(message = "Укажите имя")
-    @Size(min = 2, max = 15)
     private String name;
 
     @Column(name = "last_name")
     @NotEmpty(message = "Укажите фамилию")
-    @Size(min = 2, max = 15)
     private String lastName;
 
     @Column(name = "email")
     @NotEmpty(message = "Укажите почту")
     @Email(message = "Не верный формат почты")
     private String email;
+
     @Column(name = "password")
     @NotEmpty(message = "Укажите пароль")
-    @Size(min = 8, max = 20)
     private String password;
+
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "users_id"), inverseJoinColumns = @JoinColumn(name = "roles_id"))
+    private List<Role> roles;
 
     public User() {
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    // второй геттер
     public String getName() {
         return name;
     }
@@ -84,17 +99,17 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return getRoles();
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return name;
     }
 
 
