@@ -11,7 +11,7 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "users")
-public class User implements GrantedAuthority, UserDetails {
+public class User implements UserDetails {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +31,10 @@ public class User implements GrantedAuthority, UserDetails {
     @NotEmpty(message = "Укажите почту")
     @Email(message = "Не верный формат почты")
     private String email;
+    @Column(name = "password")
+    @NotEmpty(message = "Укажите пароль")
+    @Size(min = 8, max = 20)
+    private String password;
 
     public User() {
     }
@@ -79,11 +83,6 @@ public class User implements GrantedAuthority, UserDetails {
     }
 
     @Override
-    public String getAuthority() {
-        return null;
-    }
-
-    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
@@ -97,6 +96,12 @@ public class User implements GrantedAuthority, UserDetails {
     public String getUsername() {
         return null;
     }
+
+
+
+
+
+
 
     @Override
     public boolean isAccountNonExpired() {
